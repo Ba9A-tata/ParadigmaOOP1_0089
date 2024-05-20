@@ -1,44 +1,77 @@
 #include <iostream>
-#include <string>
+#include <vector>
 using namespace std;
 
-class orang {
+class dokter;
+class pasien { // asosiasi
 public:
     string nama;
-
-    orang(string pNama) :
-        nama(pNama) {
-            cout << "orang dibuat\n" << endl;
+    vector<dokter*> daftar_dokter;
+    pasien(string pNama) :nama(pNama) {
+        cout << "Pasien \"" << nama << "\" ada\n";
     }
-    ~orang() {
-        cout << "orang dihapus\n" << endl;
+    ~pasien() {
+        cout << "Pasien \"" << nama << "\" tidak ada\n";
     }
-
-    int jumlah(int a, int b) {
-        return a + b;
-    }
-
+    void tambahDokter(dokter*);
+    void cetakDokter();
 };
-
-class pelajar : public orang {
+class dokter {
 public:
-    string sekolah;
+    string nama;
+    vector<pasien*> daftar_pasien;
 
-    pelajar(string pNama, string pSekolah) : orang(pNama), sekolah(pSekolah) {
-        cout << "pelajar dibuat\n" << endl;
+    dokter(string pNama) :nama(pNama) {
+        cout << "Dokter \"" << nama << "\" ada\n";
     }
-    ~pelajar() {
-        cout << "pelajar dihapus\n" << endl;
+    ~dokter() {
+        cout << "Dokter \"" << nama << "\" tidak ada\n";
     }
-    string perkenalan() {
-        return "Hallo, nama saya" + nama + " dari sekolah " + sekolah + "\n\n";
-    }
+    void tambahPasien(pasien*);
+    void cetakPasien();
 };
+
+void pasien::tambahDokter(dokter* pDokter) {
+    daftar_dokter.push_back(pDokter);
+}
+void pasien::cetakDokter() {
+    cout << "Daftar Dokter yang mengangani pasien \"" << this->nama << "\":n";
+    for (auto& a : daftar_dokter) { // auto digunakan dalam perulangan for untuk secara otomatis menentukan tipe data dari elemen yang diitera
+        cout << a->nama << "\n";
+    }
+    cout << endl;
+}
+void dokter::tambahPasien(pasien* pPasien) {
+    daftar_pasien.push_back(pPasien);
+    pPasien->tambahDokter(this);
+}
+void dokter::cetakPasien() {
+    cout << "Daftar Pasien dari dokter \"" << this->nama << "\":n";
+    for (auto& a : daftar_pasien) {
+        cout << a->nama << "\n";
+    }
+    cout << endl;
+}
 
 int main() {
-    pelajar siswa1("andi laksono", "SMAN 1 Bantul");
-    cout << siswa1.perkenalan();
-    cout << "Hasil = " << siswa1.jumlah(10, 90) << endl;
+    dokter* varDokter1 = new dokter("dr.budi");
+    dokter* varDokter2 = new dokter("dr.Tono");
+    pasien* varPasien1 = new pasien("Andi");
+    pasien* varPasien2 = new pasien("Lia");
+
+    varDokter1->tambahPasien(varPasien1);
+    varDokter1->tambahPasien(varPasien2);
+    varDokter2->tambahPasien(varPasien1);
+
+    varDokter1->cetakPasien();
+    varDokter2->cetakPasien();
+    varPasien1->cetakDokter();
+    varPasien2->cetakDokter();
+
+    delete varPasien1;
+    delete varPasien2;
+    delete varDokter1;
+    delete varDokter2;
 
     return 0;
-};
+}
