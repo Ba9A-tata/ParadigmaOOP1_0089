@@ -6,5 +6,6 @@ class mahasiswa {
 private:
     const int Id;
     string nama;
+    float nilai;
     
 }
