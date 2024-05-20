@@ -3,6 +3,7 @@
 using namespace std;
 
 class dokter;
-class pasien {
-    
+class pasien { // asosiasi
+public:
+
 }
